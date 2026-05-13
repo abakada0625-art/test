@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AyosPH</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-left">
+            <div class="auth-illustration">
+                <h2>Join AyosPH Today!</h2>
+                <p>Be part of the solution in your community.</p>
+                <div class="auth-feature-list">
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <p class="auth-feature-text">Free for all residents</p>
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <p class="auth-feature-text">Quick and easy setup</p>
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        </div>
+                        <p class="auth-feature-text">Secure and private</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="auth-right">
+            <div class="auth-form-wrapper">
+                <div class="auth-logo">
+                    <div class="auth-logo-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    </div>
+                    <span class="auth-logo-text">AyosPH</span>
+                </div>
+                <h1 class="auth-title">Create an account</h1>
+                <p class="auth-subtitle">Start making a difference in your community.</p>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Full Name</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="Juan Dela Cruz" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="juan@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="barangay">Barangay</label>
+                        <input type="text" id="barangay" class="form-input" placeholder="Barangay San Jose" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="contactNumber">Contact Number</label>
+                        <input type="tel" id="contactNumber" class="form-input" placeholder="09123456789" pattern="[0-9]{11}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="At least 8 characters" required minlength="8">
+                        <div class="password-strength">
+                            <div class="password-strength-bar"><div class="password-strength-fill" id="strength-bar"></div></div>
+                            <div class="password-strength-text" id="strength-text"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="terms" class="checkbox-input" required>
+                            <label for="terms" class="checkbox-label">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full btn-lg">Create Account</button>
+                </form>
+                <div class="auth-footer">Already have an account? <a href="/login.html">Sign in</a></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase.js"></script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        document.getElementById('password').addEventListener('input', function() {
+            const strength = Utils.getPasswordStrength(this.value);
+            const bar = document.getElementById('strength-bar');
+            const text = document.getElementById('strength-text');
+            bar.className = 'password-strength-fill ' + strength.level;
+            text.textContent = strength.level.charAt(0).toUpperCase() + strength.level.slice(1) + ' password';
+        });
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            Utils.showLoading(submitBtn);
+            const result = await Auth.register({
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                barangay: document.getElementById('barangay').value,
+                contactNumber: document.getElementById('contactNumber').value
+            });
+            Utils.hideLoading(submitBtn);
+            if (result.success) setTimeout(() => window.location.href = '/login.html', 2000);
+        });
+    </script>
+</body>
+</html>
